@@ -55,6 +55,7 @@ public class BoardPanel extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (e.getX() < HEADER_SIZE || e.getY() < HEADER_SIZE) return;
                 int col = (e.getX() - HEADER_SIZE) / CELL_SIZE;
                 int row = (e.getY() - HEADER_SIZE) / CELL_SIZE;
                 if (row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE) {
@@ -76,6 +77,12 @@ public class BoardPanel extends JPanel {
             @Override
             public void mouseMoved(MouseEvent e) {
                 if (isPlayerBoard && model.getPhase() == GamePhase.PLACEMENT) {
+                    if (e.getX() < HEADER_SIZE || e.getY() < HEADER_SIZE) {
+                        hoverCells.clear();
+                        invalidHover = false;
+                        repaint();
+                        return;
+                    }
                     int col = (e.getX() - HEADER_SIZE) / CELL_SIZE;
                     int row = (e.getY() - HEADER_SIZE) / CELL_SIZE;
                     updateHover(row, col);
