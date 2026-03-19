@@ -17,6 +17,7 @@ public class BattleshipFrame extends JFrame implements GameModel.GameListener {
     private final JButton playAgainButton;
     private final JPanel controlPanel;
     private final JPanel aiBoardContainer;
+    private Timer aiTimer;
 
     // Colors
     private static final Color BG_DARK = new Color(15, 23, 42);
@@ -118,7 +119,13 @@ public class BattleshipFrame extends JFrame implements GameModel.GameListener {
 
         rotateButton.addActionListener(e -> model.toggleOrientation());
         randomButton.addActionListener(e -> model.randomPlacement());
-        playAgainButton.addActionListener(e -> model.reset());
+        playAgainButton.addActionListener(e -> {
+            if (aiTimer != null) {
+                aiTimer.stop();
+                aiTimer = null;
+            }
+            model.reset();
+        });
 
         controlPanel.add(rotateButton);
         controlPanel.add(randomButton);
@@ -175,12 +182,16 @@ public class BattleshipFrame extends JFrame implements GameModel.GameListener {
             if (model.getPhase() == GamePhase.PLAYING && model.isPlayerTurn()) {
                 boolean fired = model.playerShoot(row, col);
                 if (fired && model.getPhase() != GamePhase.GAME_OVER) {
-                    // AI shoots after a delay
-                    Timer timer = new Timer(600, e -> {
+                    // Cancel any existing AI timer before starting a new one
+                    if (aiTimer != null) {
+                        aiTimer.stop();
+                    }
+                    aiTimer = new Timer(600, e -> {
+                        aiTimer = null;
                         model.aiShoot();
                     });
-                    timer.setRepeats(false);
-                    timer.start();
+                    aiTimer.setRepeats(false);
+                    aiTimer.start();
                 }
             }
         });
