@@ -177,7 +177,7 @@ public class BoardPanel extends JPanel {
                 } else if (state == CellState.SUNK) {
                     bg = SUNK_COLOR;
                     border = SUNK_BORDER;
-                    content = "\uD83D\uDD25"; // fire
+                    content = "\u2620"; // skull and crossbones
                 } else {
                     bg = OCEAN;
                     border = OCEAN_BORDER;
